@@ -1,0 +1,100 @@
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Search, TrendingUp, Zap, BarChart3 } from "lucide-react";
+
+const HeroSection = ({ onSearch }: { onSearch: (query: string) => void }) => {
+  const [query, setQuery] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) onSearch(query.trim());
+  };
+
+  return (
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+      {/* Grid pattern background */}
+      <div className="absolute inset-0 grid-pattern opacity-40" />
+      
+      {/* Gradient orbs */}
+      <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-[120px] animate-pulse-glow" />
+      <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-neon/10 blur-[120px] animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
+
+      <div className="relative z-10 container mx-auto px-6 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8"
+          >
+            <Zap className="w-4 h-4 text-neon" />
+            <span className="text-sm font-mono text-muted-foreground">Real-time channel intelligence</span>
+          </motion.div>
+
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6">
+            <span className="text-foreground">Decode Your</span>
+            <br />
+            <span className="text-gradient">YouTube Growth</span>
+          </h1>
+
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed">
+            Terminal-grade analytics for creators who take their channel seriously. 
+            Uncover hidden patterns, predict trends, and outperform the algorithm.
+          </p>
+
+          {/* Search bar */}
+          <form onSubmit={handleSubmit} className="max-w-xl mx-auto mb-16">
+            <div className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/50 to-neon/50 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative flex items-center glass rounded-xl overflow-hidden">
+                <Search className="w-5 h-5 text-muted-foreground ml-4" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Enter channel name or URL..."
+                  className="flex-1 bg-transparent px-4 py-4 text-foreground placeholder:text-muted-foreground outline-none font-mono text-sm"
+                />
+                <button
+                  type="submit"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-4 font-semibold text-sm transition-colors"
+                >
+                  Analyze
+                </button>
+              </div>
+            </div>
+          </form>
+
+          {/* Quick stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="flex flex-wrap justify-center gap-8 md:gap-16"
+          >
+            {[
+              { icon: BarChart3, label: "Channels Analyzed", value: "2.4M+" },
+              { icon: TrendingUp, label: "Data Points", value: "18B+" },
+              { icon: Zap, label: "Avg Response", value: "<2s" },
+            ].map((stat) => (
+              <div key={stat.label} className="flex items-center gap-3">
+                <stat.icon className="w-5 h-5 text-primary" />
+                <div className="text-left">
+                  <p className="text-xl font-bold font-mono text-foreground">{stat.value}</p>
+                  <p className="text-xs text-muted-foreground">{stat.label}</p>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+export default HeroSection;
