@@ -1,21 +1,18 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, TrendingUp, Zap, BarChart3 } from "lucide-react";
+import { Search, TrendingUp, Zap, BarChart3, Loader2 } from "lucide-react";
 
-const HeroSection = ({ onSearch }: { onSearch: (query: string) => void }) => {
+const HeroSection = ({ onSearch, loading }: { onSearch: (query: string) => void; loading?: boolean }) => {
   const [query, setQuery] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim()) onSearch(query.trim());
+    if (query.trim() && !loading) onSearch(query.trim());
   };
 
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-      {/* Grid pattern background */}
       <div className="absolute inset-0 grid-pattern opacity-40" />
-      
-      {/* Gradient orbs */}
       <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-[120px] animate-pulse-glow" />
       <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-neon/10 blur-[120px] animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
 
@@ -25,7 +22,6 @@ const HeroSection = ({ onSearch }: { onSearch: (query: string) => void }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          {/* Badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -47,7 +43,6 @@ const HeroSection = ({ onSearch }: { onSearch: (query: string) => void }) => {
             Uncover hidden patterns, predict trends, and outperform the algorithm.
           </p>
 
-          {/* Search bar */}
           <form onSubmit={handleSubmit} className="max-w-xl mx-auto mb-16">
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/50 to-neon/50 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -59,18 +54,20 @@ const HeroSection = ({ onSearch }: { onSearch: (query: string) => void }) => {
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Enter channel name or URL..."
                   className="flex-1 bg-transparent px-4 py-4 text-foreground placeholder:text-muted-foreground outline-none font-mono text-sm"
+                  disabled={loading}
                 />
                 <button
                   type="submit"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-4 font-semibold text-sm transition-colors"
+                  disabled={loading}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-4 font-semibold text-sm transition-colors disabled:opacity-50 flex items-center gap-2"
                 >
-                  Analyze
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  {loading ? "Analyzing..." : "Analyze"}
                 </button>
               </div>
             </div>
           </form>
 
-          {/* Quick stats */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
