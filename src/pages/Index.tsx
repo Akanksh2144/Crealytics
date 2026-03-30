@@ -1,16 +1,43 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { toast } from "sonner";
+import Navbar from "@/components/Navbar";
+import HeroSection from "@/components/HeroSection";
+import StatsGrid from "@/components/StatsGrid";
+import PerformanceCharts from "@/components/PerformanceCharts";
+import TopVideos from "@/components/TopVideos";
+import Footer from "@/components/Footer";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  const [searched, setSearched] = useState(false);
+
+  const handleSearch = (query: string) => {
+    setSearched(true);
+    toast.success(`Analyzing "${query}"...`, {
+      description: "Loading channel data",
+    });
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <HeroSection onSearch={handleSearch} />
+      {searched && (
+        <>
+          <StatsGrid />
+          <PerformanceCharts />
+          <TopVideos />
+        </>
+      )}
+      {!searched && (
+        <section className="py-20 text-center">
+          <p className="text-muted-foreground font-mono text-sm">
+            Enter a channel name above to see the analytics dashboard
+          </p>
+        </section>
+      )}
+      <Footer />
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
