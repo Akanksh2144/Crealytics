@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import StatsGrid from "@/components/StatsGrid";
 import PerformanceCharts from "@/components/PerformanceCharts";
 import TopVideos from "@/components/TopVideos";
+import MonetizationEstimate from "@/components/MonetizationEstimate";
 import Footer from "@/components/Footer";
 import { useYouTubeAnalytics } from "@/hooks/useYouTubeAnalytics";
 
@@ -30,6 +30,7 @@ const Index = () => {
       {data && (
         <>
           <StatsGrid channel={data.channel} videos={data.videos} />
+          <MonetizationEstimate channel={data.channel} videos={data.videos} />
           <PerformanceCharts videos={data.videos} />
           <TopVideos videos={data.videos} />
         </>
