@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Activity } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => (
   <motion.nav
