@@ -17,8 +17,8 @@ const Navbar = () => (
         <span className="font-mono text-[10px] text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">BETA</span>
       </div>
       <div className="hidden md:flex items-center gap-8">
-        <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Dashboard</a>
-        <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Compare</a>
+        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Dashboard</Link>
+        <Link to="/compare" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Compare</Link>
         <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Trends</a>
         <button className="bg-primary text-primary-foreground text-sm font-semibold px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
           Sign In

@@ -33,8 +33,11 @@ const Index = () => {
       {data && (
         <>
           <StatsGrid channel={data.channel} videos={data.videos} />
+          <ChannelRankings channel={data.channel} rankings={null} />
           <MonetizationEstimate channel={data.channel} videos={data.videos} />
           <PerformanceCharts videos={data.videos} />
+          <DailyAnalytics videos={data.videos} />
+          <FutureProjections channel={data.channel} videos={data.videos} />
           <TopVideos videos={data.videos} />
         </>
       )}
