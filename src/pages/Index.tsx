@@ -6,29 +6,35 @@ import StatsGrid from "@/components/StatsGrid";
 import PerformanceCharts from "@/components/PerformanceCharts";
 import TopVideos from "@/components/TopVideos";
 import Footer from "@/components/Footer";
+import { useYouTubeAnalytics } from "@/hooks/useYouTubeAnalytics";
 
 const Index = () => {
-  const [searched, setSearched] = useState(false);
+  const { data, loading, error, fetchAnalytics } = useYouTubeAnalytics();
 
-  const handleSearch = (query: string) => {
-    setSearched(true);
+  const handleSearch = async (query: string) => {
     toast.success(`Analyzing "${query}"...`, {
-      description: "Loading channel data",
+      description: "Fetching real channel data from YouTube",
     });
+    await fetchAnalytics(query);
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <HeroSection onSearch={handleSearch} />
-      {searched && (
+      <HeroSection onSearch={handleSearch} loading={loading} />
+      {error && (
+        <section className="py-10 text-center">
+          <p className="text-destructive font-mono text-sm">{error}</p>
+        </section>
+      )}
+      {data && (
         <>
-          <StatsGrid />
-          <PerformanceCharts />
-          <TopVideos />
+          <StatsGrid channel={data.channel} videos={data.videos} />
+          <PerformanceCharts videos={data.videos} />
+          <TopVideos videos={data.videos} />
         </>
       )}
-      {!searched && (
+      {!data && !loading && !error && (
         <section className="py-20 text-center">
           <p className="text-muted-foreground font-mono text-sm">
             Enter a channel name above to see the analytics dashboard
