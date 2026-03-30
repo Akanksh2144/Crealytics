@@ -5,6 +5,9 @@ import StatsGrid from "@/components/StatsGrid";
 import PerformanceCharts from "@/components/PerformanceCharts";
 import TopVideos from "@/components/TopVideos";
 import MonetizationEstimate from "@/components/MonetizationEstimate";
+import DailyAnalytics from "@/components/DailyAnalytics";
+import FutureProjections from "@/components/FutureProjections";
+import ChannelRankings from "@/components/ChannelRankings";
 import Footer from "@/components/Footer";
 import { useYouTubeAnalytics } from "@/hooks/useYouTubeAnalytics";
 
