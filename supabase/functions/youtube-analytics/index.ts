@@ -20,7 +20,33 @@ serve(async (req) => {
       });
     }
 
-    const { channelQuery } = await req.json();
+    const { channelQuery, action } = await req.json();
+
+    // Handle search suggestions
+    if (action === "suggest") {
+      if (!channelQuery || typeof channelQuery !== "string" || channelQuery.length < 2 || channelQuery.length > 200) {
+        return new Response(JSON.stringify({ suggestions: [] }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const suggestUrl = `${YOUTUBE_API_BASE}/search?part=snippet&type=channel&q=${encodeURIComponent(channelQuery)}&maxResults=5&key=${apiKey}`;
+      const suggestRes = await fetch(suggestUrl);
+      const suggestData = await suggestRes.json();
+      if (!suggestRes.ok || !suggestData.items?.length) {
+        return new Response(JSON.stringify({ suggestions: [] }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const suggestions = suggestData.items.map((item: any) => ({
+        channelId: item.snippet.channelId,
+        title: item.snippet.channelTitle,
+        thumbnail: item.snippet.thumbnails?.default?.url || "",
+        description: item.snippet.description?.slice(0, 100) || "",
+      }));
+      return new Response(JSON.stringify({ suggestions }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     if (!channelQuery || typeof channelQuery !== "string" || channelQuery.length > 200) {
       return new Response(JSON.stringify({ error: "Invalid channel query" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
