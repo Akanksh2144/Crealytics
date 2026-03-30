@@ -1,14 +1,46 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Search, TrendingUp, Zap, BarChart3, Loader2 } from "lucide-react";
+import { useChannelSuggestions } from "@/hooks/useChannelSuggestions";
 
 const HeroSection = ({ onSearch, loading }: { onSearch: (query: string) => void; loading?: boolean }) => {
   const [query, setQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const { suggestions, fetchSuggestions, clearSuggestions } = useChannelSuggestions();
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim() && !loading) onSearch(query.trim());
+    if (query.trim() && !loading) {
+      setShowSuggestions(false);
+      clearSuggestions();
+      onSearch(query.trim());
+    }
   };
+
+  const handleSelect = (title: string) => {
+    setQuery(title);
+    setShowSuggestions(false);
+    clearSuggestions();
+    onSearch(title);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setQuery(val);
+    fetchSuggestions(val);
+    setShowSuggestions(true);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
@@ -44,14 +76,15 @@ const HeroSection = ({ onSearch, loading }: { onSearch: (query: string) => void;
           </p>
 
           <form onSubmit={handleSubmit} className="max-w-xl mx-auto mb-16">
-            <div className="relative group">
+            <div className="relative group" ref={wrapperRef}>
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/50 to-neon/50 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative flex items-center glass rounded-xl overflow-hidden">
                 <Search className="w-5 h-5 text-muted-foreground ml-4" />
                 <input
                   type="text"
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+                  onChange={handleChange}
+                  onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
                   placeholder="Enter channel name or URL..."
                   className="flex-1 bg-transparent px-4 py-4 text-foreground placeholder:text-muted-foreground outline-none font-mono text-sm"
                   disabled={loading}
@@ -65,6 +98,36 @@ const HeroSection = ({ onSearch, loading }: { onSearch: (query: string) => void;
                   {loading ? "Analyzing..." : "Analyze"}
                 </button>
               </div>
+
+              <AnimatePresence>
+                {showSuggestions && suggestions.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    className="absolute left-0 right-0 top-full mt-2 glass rounded-xl overflow-hidden z-50"
+                  >
+                    {suggestions.map((s) => (
+                      <button
+                        key={s.channelId}
+                        type="button"
+                        onClick={() => handleSelect(s.title)}
+                        className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-secondary/60 transition-colors"
+                      >
+                        {s.thumbnail && (
+                          <img src={s.thumbnail} alt="" className="w-8 h-8 rounded-full shrink-0" />
+                        )}
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">{s.title}</p>
+                          {s.description && (
+                            <p className="text-xs text-muted-foreground truncate">{s.description}</p>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </form>
 
