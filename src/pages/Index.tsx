@@ -40,6 +40,7 @@ const Index = () => {
           <DailyAnalytics videos={data.videos} />
           <FutureProjections channel={data.channel} videos={data.videos} />
           <TopVideos videos={data.videos} />
+          <DeepInsightsBanner />
         </>
       )}
       {!data && !loading && !error && (
