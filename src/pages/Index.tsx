@@ -9,6 +9,7 @@ import DailyAnalytics from "@/components/DailyAnalytics";
 import FutureProjections from "@/components/FutureProjections";
 import ChannelRankings from "@/components/ChannelRankings";
 import Footer from "@/components/Footer";
+import DeepInsightsBanner from "@/components/DeepInsightsBanner";
 import { useYouTubeAnalytics } from "@/hooks/useYouTubeAnalytics";
 
 const Index = () => {
