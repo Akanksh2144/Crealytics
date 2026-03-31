@@ -10,10 +10,14 @@ import FutureProjections from "@/components/FutureProjections";
 import ChannelRankings from "@/components/ChannelRankings";
 import Footer from "@/components/Footer";
 import DeepInsightsBanner from "@/components/DeepInsightsBanner";
+import MyChannelDashboard from "@/components/MyChannelDashboard";
 import { useYouTubeAnalytics } from "@/hooks/useYouTubeAnalytics";
+import { useMyChannel } from "@/hooks/useMyChannel";
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const { data, loading, error, fetchAnalytics } = useYouTubeAnalytics();
+  const { data: myData, nicheData, loading: myLoading, nicheLoading, isConnected } = useMyChannel();
 
   const handleSearch = async (query: string) => {
     toast.success(`Analyzing "${query}"...`, {
@@ -25,6 +29,24 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+
+      {/* My Channel section — only when connected */}
+      {isConnected && (
+        <>
+          {myLoading && (
+            <section className="pt-28 pb-10 text-center">
+              <Loader2 className="w-6 h-6 animate-spin text-primary mx-auto mb-2" />
+              <p className="text-sm text-muted-foreground font-mono">Loading your channel data...</p>
+            </section>
+          )}
+          {myData && (
+            <div className="pt-20">
+              <MyChannelDashboard data={myData} nicheData={nicheData} nicheLoading={nicheLoading} />
+            </div>
+          )}
+        </>
+      )}
+
       <HeroSection onSearch={handleSearch} loading={loading} />
       {error && (
         <section className="py-10 text-center">

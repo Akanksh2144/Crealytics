@@ -22,11 +22,13 @@ export type Database = {
           channel_thumbnail: string | null
           created_at: string | null
           id: string
+          niche_data: Json | null
           refresh_token: string | null
           scopes: string | null
           token_expires_at: string | null
           updated_at: string | null
           user_id: string
+          watch_hours_total: number | null
         }
         Insert: {
           access_token?: string | null
@@ -35,11 +37,13 @@ export type Database = {
           channel_thumbnail?: string | null
           created_at?: string | null
           id?: string
+          niche_data?: Json | null
           refresh_token?: string | null
           scopes?: string | null
           token_expires_at?: string | null
           updated_at?: string | null
           user_id: string
+          watch_hours_total?: number | null
         }
         Update: {
           access_token?: string | null
@@ -48,11 +52,13 @@ export type Database = {
           channel_thumbnail?: string | null
           created_at?: string | null
           id?: string
+          niche_data?: Json | null
           refresh_token?: string | null
           scopes?: string | null
           token_expires_at?: string | null
           updated_at?: string | null
           user_id?: string
+          watch_hours_total?: number | null
         }
         Relationships: []
       }
