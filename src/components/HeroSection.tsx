@@ -77,7 +77,6 @@ const HeroSection = ({ onSearch, loading }: { onSearch: (query: string) => void;
 
           <form onSubmit={handleSubmit} className="max-w-xl mx-auto mb-16">
             <div className="relative group" ref={wrapperRef}>
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/50 to-neon/50 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative flex items-center glass rounded-xl overflow-hidden">
                 <Search className="w-5 h-5 text-muted-foreground ml-4" />
                 <input
