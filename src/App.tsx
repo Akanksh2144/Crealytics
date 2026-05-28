@@ -7,6 +7,8 @@ import Index from "./pages/Index.tsx";
 import Compare from "./pages/Compare.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
+import Intelligence from "./pages/Intelligence.tsx";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -18,6 +20,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/compare" element={<Compare />} />
+          <Route path="/intelligence" element={<Intelligence />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

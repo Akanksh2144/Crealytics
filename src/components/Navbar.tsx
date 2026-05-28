@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ConnectYouTubeModal from "@/components/ConnectYouTubeModal";
 import { useYouTubeConnection } from "@/hooks/useYouTubeConnection";
+import { TabMenu } from "@/components/TabMenu";
 
 const Navbar = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -26,9 +27,7 @@ const Navbar = () => {
             <span className="font-mono text-[10px] text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">BETA</span>
           </div>
           <div className="hidden md:flex items-center gap-8">
-            <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Dashboard</Link>
-            <Link to="/compare" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Compare</Link>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Trends</a>
+            <TabMenu />
 
             {!loading && connection ? (
               <div className="flex items-center gap-2.5 bg-secondary/60 rounded-full pl-1 pr-3 py-1">
