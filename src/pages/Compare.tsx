@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Search, Loader2, ArrowLeftRight, Users, Eye, ThumbsUp, Activity, TrendingUp, Clock } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useYouTubeAnalytics, type YouTubeAnalytics } from "@/hooks/useYouTubeAnalytics";
+import { useChannelSuggestions } from "@/hooks/useChannelSuggestions";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
 
 const formatNum = (n: number) => {
@@ -30,17 +31,52 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 const SearchInput = ({ onSearch, loading, label }: { onSearch: (q: string) => void; loading: boolean; label: string }) => {
   const [q, setQ] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const { suggestions, fetchSuggestions, clearSuggestions } = useChannelSuggestions();
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (q.trim() && !loading) {
+      setShowSuggestions(false);
+      clearSuggestions();
+      onSearch(q.trim());
+    }
+  };
+
+  const handleSelect = (title: string) => {
+    setQ(title);
+    setShowSuggestions(false);
+    clearSuggestions();
+    onSearch(title);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setQ(val);
+    fetchSuggestions(val);
+    setShowSuggestions(true);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <form
-      onSubmit={(e) => { e.preventDefault(); if (q.trim() && !loading) onSearch(q.trim()); }}
-      className="flex-1"
-    >
+    <form onSubmit={handleSubmit} className="flex-1 relative" ref={wrapperRef}>
       <label className="text-xs font-mono text-muted-foreground mb-2 block">{label}</label>
       <div className="relative flex items-center glass rounded-xl overflow-hidden">
         <Search className="w-4 h-4 text-muted-foreground ml-3" />
         <input
           value={q}
-          onChange={(e) => setQ(e.target.value)}
+          onChange={handleChange}
+          onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
           placeholder="Channel name..."
           className="flex-1 bg-transparent px-3 py-3 text-foreground placeholder:text-muted-foreground outline-none font-mono text-sm"
           disabled={loading}
@@ -50,6 +86,43 @@ const SearchInput = ({ onSearch, loading, label }: { onSearch: (q: string) => vo
           {loading ? "..." : "Go"}
         </button>
       </div>
+
+      <AnimatePresence>
+        {showSuggestions && suggestions.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            className="absolute left-0 right-0 top-full mt-2 glass rounded-xl overflow-x-hidden overflow-y-auto z-50 max-h-[300px] shadow-2xl custom-scrollbar"
+          >
+            {suggestions.map((s) => (
+              <button
+                key={s.channelId}
+                type="button"
+                onClick={() => handleSelect(s.title)}
+                className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-secondary/60 transition-colors"
+              >
+                {s.thumbnail && (
+                  <img src={s.thumbnail} alt="" referrerPolicy="no-referrer" className="w-8 h-8 rounded-full shrink-0 object-cover" />
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-medium text-foreground truncate">{s.title}</p>
+                    {s.subscriberCount && (
+                      <p className="text-xs font-semibold text-emerald-500 whitespace-nowrap bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                        {parseInt(s.subscriberCount).toLocaleString()} subs
+                      </p>
+                    )}
+                  </div>
+                  {s.description && (
+                    <p className="text-xs text-muted-foreground truncate mt-0.5">{s.description}</p>
+                  )}
+                </div>
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </form>
   );
 };
