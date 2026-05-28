@@ -24,13 +24,25 @@ export const useChannelSuggestions = () => {
     setLoading(true);
     debounceRef.current = setTimeout(async () => {
       try {
-        const { data, error } = await supabase.functions.invoke("youtube-analytics", {
-          body: { channelQuery: query, action: "suggest" },
-        });
-        if (!error && data?.suggestions) {
-          setSuggestions(data.suggestions);
+        const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
+        if (!apiKey) throw new Error("Missing YouTube API Key");
+        
+        const suggestUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(query)}&maxResults=5&key=${apiKey}`;
+        const suggestRes = await fetch(suggestUrl);
+        const suggestData = await suggestRes.json();
+        
+        if (suggestRes.ok && suggestData.items?.length) {
+          const formattedSuggestions = suggestData.items.map((item: any) => ({
+            channelId: item.snippet.channelId,
+            title: item.snippet.channelTitle,
+            thumbnail: item.snippet.thumbnails?.default?.url || "",
+            description: item.snippet.description?.slice(0, 100) || "",
+          }));
+          setSuggestions(formattedSuggestions);
+        } else {
+          setSuggestions([]);
         }
-      } catch {
+      } catch (err) {
         // silently fail suggestions
       } finally {
         setLoading(false);
