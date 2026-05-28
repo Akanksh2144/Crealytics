@@ -6,6 +6,7 @@ export interface ChannelSuggestion {
   title: string;
   thumbnail: string;
   description: string;
+  subscriberCount?: string;
 }
 
 export const useChannelSuggestions = () => {
@@ -32,11 +33,24 @@ export const useChannelSuggestions = () => {
         const suggestData = await suggestRes.json();
         
         if (suggestRes.ok && suggestData.items?.length) {
+          const channelIds = suggestData.items.map((item: any) => item.snippet.channelId).join(",");
+          const statsUrl = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelIds}&key=${apiKey}`;
+          const statsRes = await fetch(statsUrl);
+          const statsData = await statsRes.json();
+          
+          const statsMap = new Map();
+          if (statsRes.ok && statsData.items) {
+            statsData.items.forEach((item: any) => {
+              statsMap.set(item.id, item.statistics?.subscriberCount || "0");
+            });
+          }
+
           const formattedSuggestions = suggestData.items.map((item: any) => ({
             channelId: item.snippet.channelId,
             title: item.snippet.channelTitle,
             thumbnail: item.snippet.thumbnails?.default?.url || "",
             description: item.snippet.description?.slice(0, 100) || "",
+            subscriberCount: statsMap.get(item.snippet.channelId) || "0",
           }));
           setSuggestions(formattedSuggestions);
         } else {

@@ -117,10 +117,17 @@ const HeroSection = ({ onSearch, loading }: { onSearch: (query: string) => void;
                         {s.thumbnail && (
                           <img src={s.thumbnail} alt="" className="w-8 h-8 rounded-full shrink-0" />
                         )}
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-foreground truncate">{s.title}</p>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="text-sm font-medium text-foreground truncate">{s.title}</p>
+                            {s.subscriberCount && (
+                              <p className="text-xs font-semibold text-emerald-500 whitespace-nowrap bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                                {parseInt(s.subscriberCount).toLocaleString()} subs
+                              </p>
+                            )}
+                          </div>
                           {s.description && (
-                            <p className="text-xs text-muted-foreground truncate">{s.description}</p>
+                            <p className="text-xs text-muted-foreground truncate mt-0.5">{s.description}</p>
                           )}
                         </div>
                       </button>
