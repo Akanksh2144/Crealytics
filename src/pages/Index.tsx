@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import StatsGrid from "@/components/StatsGrid";
+import AdvancedMetrics from "@/components/AdvancedMetrics";
 import PerformanceCharts from "@/components/PerformanceCharts";
 import TopVideos from "@/components/TopVideos";
 import MonetizationEstimate from "@/components/MonetizationEstimate";
@@ -56,6 +57,7 @@ const Index = () => {
       {data && (
         <>
           <StatsGrid channel={data.channel} videos={data.videos} />
+          <AdvancedMetrics data={data.advanced} />
           <ChannelRankings channel={data.channel} rankings={null} />
           <MonetizationEstimate channel={data.channel} videos={data.videos} />
           <PerformanceCharts videos={data.videos} />
