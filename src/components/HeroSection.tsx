@@ -43,7 +43,7 @@ const HeroSection = ({ onSearch, loading }: { onSearch: (query: string) => void;
   }, []);
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-x-hidden">
       <div className="absolute inset-0 grid-pattern opacity-40" />
       <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-[120px] animate-pulse-glow" />
       <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-neon/10 blur-[120px] animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
@@ -105,7 +105,7 @@ const HeroSection = ({ onSearch, loading }: { onSearch: (query: string) => void;
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
-                    className="absolute left-0 right-0 top-full mt-2 glass rounded-xl overflow-hidden z-50"
+                    className="absolute left-0 right-0 top-full mt-2 glass rounded-xl overflow-x-hidden overflow-y-auto z-50 max-h-[400px] shadow-2xl custom-scrollbar"
                   >
                     {suggestions.map((s) => (
                       <button
