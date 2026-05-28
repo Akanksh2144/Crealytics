@@ -115,7 +115,7 @@ const HeroSection = ({ onSearch, loading }: { onSearch: (query: string) => void;
                         className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-secondary/60 transition-colors"
                       >
                         {s.thumbnail && (
-                          <img src={s.thumbnail} alt="" className="w-8 h-8 rounded-full shrink-0" />
+                          <img src={s.thumbnail} alt="" referrerPolicy="no-referrer" className="w-8 h-8 rounded-full shrink-0 object-cover" />
                         )}
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center justify-between gap-2">
